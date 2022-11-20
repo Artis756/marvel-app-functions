@@ -12,7 +12,7 @@ export default class MarvelService {
 	}
 	getAllCharacters = async () => {
 		const response = await this.getData(`${this._apiBase}characters?limit=9&offset=150&${this._apiKey}`)
-		return response.map(this._transformCharacter)
+		return response.data.results.map(this._transformCharacter)
 	}
 
 	getCharacter = async (id) => {

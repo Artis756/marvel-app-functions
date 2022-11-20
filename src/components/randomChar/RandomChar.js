@@ -1,5 +1,4 @@
 import './randomChar.scss';
-import thor from '../../resources/img/thor.jpeg';
 import mjolnir from '../../resources/img/mjolnir.png';
 import { Component } from 'react';
 import MarvelService from '../../services/MarvelService';
@@ -23,12 +22,12 @@ class RandomChar extends Component {
 		this.setState({ loading: false, error: true })
 	}
 
-	onLoadiing = () => {
+	onLoading = () => {
 		this.setState({ loading: true, error: false })
 	}
 
 	updateData = () => {
-		this.onLoadiing()
+		this.onLoading()
 		const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
 		this.marvelService
 			.getCharacter(id)
