@@ -2,7 +2,7 @@ import './charList.scss';
 import { Component } from 'react';
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
-import Error from '../error/Error';
+import ErrorMessage from '../error/Error';
 class CharList extends Component {
 	state = {
 		chars: [],
@@ -13,7 +13,6 @@ class CharList extends Component {
 	marvelService = new MarvelService();
 
 	onLoaded = (newChars) => {
-		console.log(...newChars);
 		this.setState(({ chars }) => {
 			return {
 				chars: [...chars, ...newChars],
@@ -45,16 +44,16 @@ class CharList extends Component {
 
 	render() {
 		const { loading, error, chars } = this.state;
-		const items = chars.map(({ thumbnail, name }) => <View thumbnail={thumbnail} name={name} />);
+		const items = chars.map(({ thumbnail, name, id }) => <View thumbnail={thumbnail} name={name} key={id} />);
 		const spinner = loading ? <Spinner /> : null;
-		const errorMessage = error ? <Error /> : null;
+		const errorMessage = error ? <ErrorMessage /> : null;
 		const content = !(spinner || errorMessage) ? items : null;
 		return (
 			<div className="char__list" >
+				{spinner}
+				{errorMessage}
 				<ul className="char__grid">
 					{content}
-					{spinner}
-					{errorMessage}
 				</ul>
 				<button className="button button__main button__long">
 					<div className="inner">load more</div>
@@ -66,9 +65,10 @@ class CharList extends Component {
 }
 
 const View = ({ thumbnail, name }) => {
+	const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
 	return (
 		<li className="char__item">
-			<img src={thumbnail} alt="abyss" />
+			<img src={thumbnail} alt="abyss" style={{objectFit}} />
 			<div className="char__name">{name}</div>
 		</li>
 	)

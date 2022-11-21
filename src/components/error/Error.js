@@ -1,7 +1,8 @@
-import error from './error.gif'
+import errorImg from './error.gif'
 
-export default Error = () => {
+const ErrorMessage = () => {
 	return (
-		<img src={error} style={{ margin: '0 auto', width: '200px' }} alt='Error'/>
+		<img src={errorImg} style={{ margin: '0 auto', width: '200px' }} alt='Error' />
 	)
 }
+export default ErrorMessage

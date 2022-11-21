@@ -3,7 +3,7 @@ import mjolnir from '../../resources/img/mjolnir.png';
 import { Component } from 'react';
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
-import Error from '../error/Error';
+import ErrorMessage from '../error/Error';
 
 class RandomChar extends Component {
 	state = {
@@ -42,7 +42,7 @@ class RandomChar extends Component {
 	render() {
 		const { char, loading, error } = this.state;
 		const spinner = loading ? <Spinner /> : null;
-		const errorMessage = error ? <Error /> : null;
+		const errorMessage = error ? <ErrorMessage /> : null;
 		const content = !(spinner || errorMessage) ? <View char={char} /> : null;
 		return (
 			<div className="randomchar">
@@ -80,10 +80,10 @@ const View = ({ char: { name, description, homepage, wiki, thumbnail } }) => {
 					{description}
 				</p>
 				<div className="randomchar__btns">
-					<a href={homepage} target='_blank' className="button button__main">
+					<a href={homepage} target='_blank' rel="noreferrer" className="button button__main">
 						<div className="inner">homepage</div>
 					</a>
-					<a href={wiki} target='_blank' className="button button__secondary">
+					<a href={wiki} target='_blank' rel="noreferrer" className="button button__secondary">
 						<div className="inner">Wiki</div>
 					</a>
 				</div>
