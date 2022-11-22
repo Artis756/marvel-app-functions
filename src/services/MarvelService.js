@@ -21,14 +21,15 @@ export default class MarvelService {
 	}
 
 	_transformCharacter = (response) => {
-		const { id, name, description, thumbnail: { path, extension }, urls } = response
+		const { id, name, description, thumbnail: { path, extension }, urls, comics: { items } } = response
 		return {
 			id,
 			name,
 			description: !description ? 'There is no description' : description.length > 210 ? description.slice(0, 220) + '...' : description,
 			thumbnail: `${path}.${extension}`,
 			homepage: urls[0].url,
-			wiki: urls[1].url
+			wiki: urls[1].url,
+			comics: items.length > 9 ? items.slice(0, 9) : items.length === 0 ? ['There are no comics'] : items
 		}
 	}
 }

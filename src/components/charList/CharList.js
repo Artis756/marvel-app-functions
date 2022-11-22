@@ -44,7 +44,8 @@ class CharList extends Component {
 
 	render() {
 		const { loading, error, chars } = this.state;
-		const items = chars.map(({ thumbnail, name, id }) => <View thumbnail={thumbnail} name={name} key={id} />);
+		const { onCharSelected } = this.props;
+		const items = chars.map(({ thumbnail, name, id }) => <View thumbnail={thumbnail} name={name} key={id} onCharSelected={() => onCharSelected(id)} />);
 		const spinner = loading ? <Spinner /> : null;
 		const errorMessage = error ? <ErrorMessage /> : null;
 		const content = !(spinner || errorMessage) ? items : null;
@@ -61,14 +62,14 @@ class CharList extends Component {
 			</div>
 		)
 	}
-
 }
 
-const View = ({ thumbnail, name }) => {
+const View = ({ thumbnail, name, onCharSelected }) => {
 	const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
 	return (
-		<li className="char__item">
-			<img src={thumbnail} alt="abyss" style={{objectFit}} />
+		<li className="char__item"
+			onClick={onCharSelected}>
+			<img src={thumbnail} alt="abyss" style={{ objectFit }} />
 			<div className="char__name">{name}</div>
 		</li>
 	)

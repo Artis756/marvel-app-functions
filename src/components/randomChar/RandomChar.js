@@ -69,7 +69,7 @@ class RandomChar extends Component {
 }
 
 const View = ({ char: { name, description, homepage, wiki, thumbnail } }) => {
-	const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'contain' : '';
+	const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
 
 	return (
 		<div className="randomchar__block">
