@@ -29,7 +29,6 @@ class CharInfo extends Component {
 	updateData = () => {
 		const { charId } = this.props;
 		if (!charId) return;
-
 		this.onLoading();
 		this.marvelService
 			.getCharacter(charId)
@@ -67,17 +66,18 @@ class CharInfo extends Component {
 
 const View = ({ char: { thumbnail, name, homepage, wiki, description, comics } }) => {
 	const items = comics.map(({ name, resourceURI }) => {
-		return (
-			<li className="char__comics-item" key={name}>
-				<a href={resourceURI}>{name}</a>
-			</li>
-		)
+		if (!name) return 'There are no comics'
+			return (
+				<li className="char__comics-item" key={name}>
+					<a href={resourceURI}>{name}</a>
+				</li>
+			)
 	})
 	const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
 	return (
 		<>
 			<div className="char__basics">
-				<img src={thumbnail} alt={`${name}`} style={{objectFit}}/>
+				<img src={thumbnail} alt={`${name}`} style={{ objectFit }} />
 				<div>
 					<div className="char__info-name">{name}</div>
 					<div className="char__btns">
