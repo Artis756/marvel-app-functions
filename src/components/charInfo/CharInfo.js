@@ -4,6 +4,8 @@ import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
 import Skeleton from '../skeleton/Skeleton';
+
+import PropTypes from 'prop-types'
 class CharInfo extends Component {
 	state = {
 		char: null,
@@ -67,11 +69,11 @@ class CharInfo extends Component {
 const View = ({ char: { thumbnail, name, homepage, wiki, description, comics } }) => {
 	const items = comics.map(({ name, resourceURI }) => {
 		if (!name) return 'There are no comics'
-			return (
-				<li className="char__comics-item" key={name}>
-					<a href={resourceURI}>{name}</a>
-				</li>
-			)
+		return (
+			<li className="char__comics-item" key={name}>
+				<a href={resourceURI}>{name}</a>
+			</li>
+		)
 	})
 	const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
 	return (
@@ -99,6 +101,10 @@ const View = ({ char: { thumbnail, name, homepage, wiki, description, comics } }
 			</ul>
 		</>
 	)
+}
+
+CharInfo.propTypes = {
+	charId: PropTypes.number
 }
 
 export default CharInfo;
