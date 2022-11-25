@@ -14,7 +14,13 @@ class CharList extends Component {
 		offset: 150,
 		charsEnded: false
 	}
+
+	itemsRefs = [];
 	marvelService = new MarvelService();
+
+	setRef = elem => {
+		this.itemsRefs.push(elem)
+	}
 
 	onLoaded = (newChars) => {
 		let ended = false;
@@ -49,14 +55,56 @@ class CharList extends Component {
 			.catch(this.onError)
 	}
 
+	changeFocus = (id) => {
+		this.itemsRefs.forEach(item => item.classList.remove('char__item_selected'))
+		this.itemsRefs[id].classList.add('char__item_selected')
+	}
+
 	componentDidMount() {
-		this.updateData()
+		this.updateData();
+		console.log(this.itemsRefs);
+	}
+
+	componentWillUnmount() {
+		this.prevRef = null;
+		this.currentRef = null;
+	}
+
+	renderItems = chars => {
+		const { onCharSelected } = this.props;
+		const items = chars.map(({ thumbnail, name, id }, index) => {
+			const handleEvent = (e, id, index) => {
+				if (e.code === 'Space' || e.code === 'Enter') {
+					e.preventDefault();
+					onCharSelected(id)
+					this.changeFocus(index)
+				}
+			}
+
+			const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
+			return (
+				<li className="char__item"
+					onClick={() => {
+						onCharSelected(id)
+						this.changeFocus(index)
+					}}
+					onKeyDown={(e) => handleEvent(e, id, index)}
+					tabIndex='0'
+					ref={this.setRef}
+					key={id}>
+					<img src={thumbnail} alt="abyss" style={{ objectFit }} />
+					<div className="char__name">{name}</div>
+				</li>
+			)
+		})
+		return items;
 	}
 
 	render() {
 		const { loading, error, chars, newItemsLoading, offset, charsEnded } = this.state;
 		const { onCharSelected } = this.props;
-		const items = chars.map(({ thumbnail, name, id }) => <View thumbnail={thumbnail} name={name} key={id} onCharSelected={() => onCharSelected(id)} />);
+
+		const items = this.renderItems(chars)
 		const spinner = loading ? <Spinner /> : null;
 		const errorMessage = error ? <ErrorMessage /> : null;
 		const content = !(spinner || errorMessage) ? items : null;
@@ -76,17 +124,6 @@ class CharList extends Component {
 			</div>
 		)
 	}
-}
-
-const View = ({ thumbnail, name, onCharSelected }) => {
-	const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
-	return (
-		<li className="char__item"
-			onClick={onCharSelected}>
-			<img src={thumbnail} alt="abyss" style={{ objectFit }} />
-			<div className="char__name">{name}</div>
-		</li>
-	)
 }
 
 CharList.propTypes = {
