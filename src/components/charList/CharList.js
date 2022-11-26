@@ -62,7 +62,6 @@ class CharList extends Component {
 
 	componentDidMount() {
 		this.updateData();
-		console.log(this.itemsRefs);
 	}
 
 	componentWillUnmount() {
