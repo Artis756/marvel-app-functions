@@ -1,49 +1,34 @@
 import './charList.scss';
 import { useEffect, useRef, useState } from 'react';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
 import PropTypes from 'prop-types'
 
 const CharList = ({ onCharSelected }) => {
 	const [chars, setChars] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState(false);
 	const [newItemsLoading, setNewItemsLoading] = useState(false);
 	const [offset, setOffset] = useState(150);
 	const [charsEnded, setCharsEnded] = useState(false);
 
 	const itemsRefs = useRef([]);
-	const marvelService = new MarvelService();
+	const { loading, error, getAllCharacters } = useMarvelService();
 
 	const onLoaded = (newChars) => {
 		let ended = false;
 		if (newChars.length < 9) ended = true;
 
 		setChars(chars => [...chars, ...newChars]);
-		setLoading(false);
 		setNewItemsLoading(false);
 		setOffset(offset => offset + 9);
 		setCharsEnded(ended);
 	}
 
-	const onError = () => {
-		setLoading(false);
-		setError(true);
-	}
+	const updateData = (offset, initial) => {
+		initial ? setNewItemsLoading(false) : setNewItemsLoading(true)
 
-	const onLoading = () => {
-		setLoading(false)
-		setNewItemsLoading(true)
-	}
-
-	const updateData = (offset) => {
-		onLoading();
-
-		marvelService
-			.getAllCharacters(offset)
+		getAllCharacters(offset)
 			.then(onLoaded)
-			.catch(onError)
 	}
 
 	const changeFocus = (id) => {
@@ -52,7 +37,7 @@ const CharList = ({ onCharSelected }) => {
 	}
 
 	useEffect(() => {
-		updateData();
+		updateData(offset, true);
 	}, [])
 
 	const renderItems = chars => {
@@ -74,7 +59,7 @@ const CharList = ({ onCharSelected }) => {
 					}}
 					onKeyDown={(e) => handleEvent(e, id, index)}
 					tabIndex='0'
-					ref={elem=>itemsRefs.current[index] = elem}
+					ref={elem => itemsRefs.current[index] = elem}
 					key={id}>
 					<img src={thumbnail} alt="abyss" style={{ objectFit }} />
 					<div className="char__name">{name}</div>
@@ -85,7 +70,7 @@ const CharList = ({ onCharSelected }) => {
 	}
 
 	const items = renderItems(chars)
-	const spinner = loading ? <Spinner /> : null;
+	const spinner = loading && !newItemsLoading ? <Spinner /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const content = !(spinner || errorMessage) ? items : null;
 	return (
