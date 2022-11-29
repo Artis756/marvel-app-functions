@@ -34,8 +34,8 @@ const ComicsList = () => {
 
 	return (
 		<div className="comics__list">
+			{spinner}
 			<ul className="comics__grid">
-				{spinner}
 				{errorMessage}
 				{items}
 			</ul>
