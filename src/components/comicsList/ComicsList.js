@@ -3,6 +3,7 @@ import useMarvelService from '../../services/MarvelService';
 import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
+import { Link } from 'react-router-dom';
 
 const ComicsList = () => {
 	const { getComics, loading, error } = useMarvelService();
@@ -48,14 +49,14 @@ const ComicsList = () => {
 	)
 }
 
-const View = ({ thumbnail, title, price }) => {
+const View = ({ thumbnail, title, price, id }) => {
 	return (
 		<li className="comics__item">
-			<a href="#">
+			<Link to={`/comics/${id}`}>
 				<img src={thumbnail} alt="x-men" className="comics__item-img" />
 				<div className="comics__item-name">{title}</div>
 				<div className="comics__item-price">{price}</div>
-			</a>
+			</Link>
 		</li>
 	);
 }

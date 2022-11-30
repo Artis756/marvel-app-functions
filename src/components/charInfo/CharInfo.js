@@ -4,18 +4,17 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
 import Skeleton from '../skeleton/Skeleton';
 import { useEffect, useState } from 'react';
-
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom';
 
 const CharInfo = ({ charId }) => {
 	const [char, setChar] = useState(null);
 	const { loading, error, getCharacter } = useMarvelService();
-
 	const updateData = () => {
 		if (!charId) return;
 
 		getCharacter(charId)
-			.then(d=>setChar(d))
+			.then(d => setChar(d))
 	}
 
 	useEffect(() => {
@@ -39,10 +38,12 @@ const CharInfo = ({ charId }) => {
 
 const View = ({ char: { thumbnail, name, homepage, wiki, description, comics } }) => {
 	const items = comics.map(({ name, resourceURI }) => {
-		if (!name) return 'There are no comics'
+		const id = resourceURI.split('/').pop();
+
+		if (!name) return 'There are no comics';
 		return (
 			<li className="char__comics-item" key={name}>
-				<a href={resourceURI}>{name}</a>
+				<Link to={`/comics/${id}`} href={resourceURI}>{name}</Link>
 			</li>
 		)
 	})
