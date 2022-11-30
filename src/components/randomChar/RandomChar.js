@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
+import { Transition } from 'react-transition-group';
 
 const RandomChar = () => {
 	const [char, setChar] = useState(null);
@@ -20,14 +21,38 @@ const RandomChar = () => {
 		updateData();
 	}, [])
 
+	const duration = 300;
+
+	const defaultStyle = {
+		transition: `opacity ${duration}ms linear`,
+		opacity: 0,
+	}
+
+	const transitionStyles = {
+		entering: { opacity: 1 },
+		entered: { opacity: 1 },
+		exiting: { opacity: 0 },
+		exited: { opacity: 0 },
+	};
+
 	const spinner = loading ? <Spinner /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const content = !(spinner || errorMessage || !char) ? <View char={char} /> : null;
+
 	return (
 		<div className="randomchar">
-			{spinner}
-			{content}
-			{errorMessage}
+			<Transition in={!loading} timeout={duration}>
+				{state => (
+					<div style={{
+						...defaultStyle,
+						...transitionStyles[state]
+					}}>
+						{content}
+						{errorMessage}
+						{spinner}
+					</div>
+				)}
+			</Transition>
 			<div className="randomchar__static">
 				<p className="randomchar__title">
 					Random character for today!<br />

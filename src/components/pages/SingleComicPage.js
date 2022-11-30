@@ -4,7 +4,7 @@ import useMarvelService from '../../services/MarvelService';
 import { useEffect, useState } from 'react';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
-
+import { Transition } from 'react-transition-group';
 const SingleComicPage = () => {
 	const [comic, setComic] = useState(null);
 	const { getComic, loading, error } = useMarvelService();
@@ -15,6 +15,20 @@ const SingleComicPage = () => {
 			.then(setComic)
 	}, []);
 
+	const duration = 300;
+
+	const defaultStyle = {
+		transition: `opacity ${duration}ms linear`,
+		opacity: 0,
+	}
+
+	const transitionStyles = {
+		entering: { opacity: 1 },
+		entered: { opacity: 1 },
+		exiting: { opacity: 0 },
+		exited: { opacity: 0 },
+	};
+
 	const spinner = loading ? <Spinner /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const content = !(spinner || errorMessage || !comic) ? <View {...comic} /> : null;
@@ -23,7 +37,17 @@ const SingleComicPage = () => {
 		<>
 			{spinner}
 			{errorMessage}
-			{content}
+
+			<Transition in={!loading} timeout={duration}>
+				{state => (
+					<div style={{
+						...defaultStyle,
+						...transitionStyles[state]
+					}}>
+						{content}
+					</div>
+				)}
+			</Transition>
 		</>
 	)
 }

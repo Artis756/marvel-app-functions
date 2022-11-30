@@ -4,6 +4,10 @@ import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
 import { Link } from 'react-router-dom';
+import {
+	CSSTransition,
+	TransitionGroup,
+} from 'react-transition-group';
 
 const ComicsList = () => {
 	const { getComics, loading, error } = useMarvelService();
@@ -28,7 +32,16 @@ const ComicsList = () => {
 		updateComics(true)
 	}, [])
 
-	const items = comics.map((comic, index) => <View {...comic} key={index} />)
+	const items = comics.map((comic, index) => {
+		return (
+			<CSSTransition
+				key={index}
+				timeout={500}
+				classNames='item'>
+				<View {...comic} />
+			</CSSTransition>
+		)
+	})
 
 	const spinner = loading && !newItemsLoading ? <Spinner /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
@@ -36,10 +49,10 @@ const ComicsList = () => {
 	return (
 		<div className="comics__list">
 			{spinner}
-			<ul className="comics__grid">
-				{errorMessage}
+			{errorMessage}
+			<TransitionGroup className='comics__grid'>
 				{items}
-			</ul>
+			</TransitionGroup>
 			<button className="button button__main button__long"
 				onClick={() => updateComics()}
 				disabled={newItemsLoading}>

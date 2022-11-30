@@ -6,6 +6,8 @@ import Skeleton from '../skeleton/Skeleton';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom';
+import { Transition } from 'react-transition-group';
+
 
 const CharInfo = ({ charId }) => {
 	const [char, setChar] = useState(null);
@@ -21,6 +23,20 @@ const CharInfo = ({ charId }) => {
 		updateData();
 	}, [charId])
 
+	const duration = 300;
+
+	const defaultStyle = {
+		transition: `opacity ${duration}ms linear`,
+		opacity: 0,
+	}
+
+	const transitionStyles = {
+		entering: { opacity: 1 },
+		entered: { opacity: 1 },
+		exiting: { opacity: 0 },
+		exited: { opacity: 0 },
+	};
+
 	const spinner = loading ? <Spinner /> : null;
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const skeleton = !(error || loading || char) ? <Skeleton /> : null;
@@ -28,10 +44,19 @@ const CharInfo = ({ charId }) => {
 
 	return (
 		<div className="char__info" >
-			{spinner}
-			{errorMessage}
-			{skeleton}
-			{content}
+			<Transition in={!loading} timeout={duration}>
+				{state => (
+					<div style={{
+						...defaultStyle,
+						...transitionStyles[state]
+					}}>
+						{content}
+						{errorMessage}
+						{spinner}
+						{skeleton}
+					</div>
+				)}
+			</Transition>
 		</div>
 	)
 }

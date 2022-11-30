@@ -4,6 +4,11 @@ import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
 import PropTypes from 'prop-types'
+import {
+	CSSTransition,
+	TransitionGroup,
+} from 'react-transition-group';
+
 
 const CharList = ({ onCharSelected }) => {
 	const [chars, setChars] = useState([]);
@@ -52,18 +57,23 @@ const CharList = ({ onCharSelected }) => {
 
 			const objectFit = thumbnail.indexOf('image_not_available') !== -1 ? 'fill' : '';
 			return (
-				<li className="char__item"
-					onClick={() => {
-						onCharSelected(id)
-						changeFocus(index)
-					}}
-					onKeyDown={(e) => handleEvent(e, id, index)}
-					tabIndex='0'
-					ref={elem => itemsRefs.current[index] = elem}
-					key={id}>
-					<img src={thumbnail} alt="abyss" style={{ objectFit }} />
-					<div className="char__name">{name}</div>
-				</li>
+				<CSSTransition
+					timeout={500}
+					key={id}
+					classNames='item'>
+					<li className="char__item"
+						onClick={() => {
+							onCharSelected(id)
+							changeFocus(index)
+						}}
+						onKeyDown={(e) => handleEvent(e, id, index)}
+						tabIndex='0'
+						ref={elem => itemsRefs.current[index] = elem}
+					>
+						<img src={thumbnail} alt="abyss" style={{ objectFit }} />
+						<div className="char__name">{name}</div>
+					</li>
+				</CSSTransition>
 			)
 		})
 		return items;
@@ -77,9 +87,9 @@ const CharList = ({ onCharSelected }) => {
 		<div className="char__list" >
 			{spinner}
 			{errorMessage}
-			<ul className="char__grid">
+			<TransitionGroup className="char__grid">
 				{content}
-			</ul>
+			</TransitionGroup>
 			<button className="button button__main button__long"
 				onClick={() => updateData(offset)}
 				disabled={newItemsLoading}
